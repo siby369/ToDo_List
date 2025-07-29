@@ -58,18 +58,35 @@
                 this.saveToStorage();
                 this.render();
             }
+            toggleTask(id) {
+                this.tasks = this.tasks.map(task =>
+                    task.id === id ? { ...task, completed: !task.completed } : task
+                );
+                this.saveToStorage();
+                this.render();
+            }
+            deleteTask(id) {
+                this.tasks = this.tasks.filter(task => task.id !== id);
+                this.saveToStorage();
+                this.render();
+            }
             saveToStorage() {
                 localStorage.setItem('tasks', JSON.stringify(this.tasks));
             }
             render() {
                 this.taskList.innerHTML = this.tasks.map(task => `
                     <div class="task-item">
-                        <span class="task-text">${task.text}</span>
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="todoApp.toggleTask(${task.id})">
+                        <span class="task-text${task.completed ? ' completed' : ''}">${task.text}</span>
+                        <button onclick="todoApp.deleteTask(${task.id})">Delete</button>
                     </div>
                 `).join('');
             }
         }
         const todoApp = new TodoApp();
     </script>
+    <style>
+        .task-text.completed { text-decoration: line-through; color: #6b7280; }
+    </style>
 </body>
 </html>
